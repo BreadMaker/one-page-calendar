@@ -1,6 +1,7 @@
 {
   "name": "one-page-calendar",
-  "description": "One Page Calendar, based on and idea by @bpk69",
+  "version": "0.0.1",
+  "description": "One Page Calendar, based on an idea I found on the Internet",
   "main": "index.html",
   "repository": {
     "type": "git",
@@ -20,7 +21,6 @@
   },
   "author": "BreadMaker",
   "license": "GPL-3.0",
-  "private": true,
   "devDependencies": {
     "jshint": "latest",
     "clean-css-cli": "latest",
