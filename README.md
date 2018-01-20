@@ -1,7 +1,5 @@
 # One Page Calendar
 
----------
-
 **OPG** is a locale-aware one page calendar based on an idea I found on the
 Internet. It makes intensive use of [moment.js](https://momentjs.com/) to detect
 and show correct locale dates and names.
