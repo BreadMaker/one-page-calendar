@@ -1,0 +1,28 @@
+.noborder {
+    border-top: none !important;
+}
+
+.month {
+    position: relative;
+}
+
+.ui.celled.table tr td, .ui.celled.table tr th {
+    border-left: 1px solid rgba(34, 36, 38, .1)!important;
+}
+
+.ui.top.right.attached.label {
+    padding: .25em .5em;
+}
+
+.selected {
+    background-color: #dde;
+}
+
+.last.day {
+    background-color: #fff6f6;
+    color: #9f3a38;
+}
+
+.last.day.selected {
+    background-color: #ebb;
+}

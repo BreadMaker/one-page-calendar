@@ -1,0 +1,32 @@
+{
+  "name": "one-page-calendar",
+  "description": "One Page Calendar, based on and idea by @bpk69",
+  "main": "index.html",
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.com:BreadMaker/one-page-calendar.git"
+  },
+  "scripts": {
+    "lint": "jshint src/js/main.js",
+    "build:css": "cat src/css/main.css | cleancss -O1 specialComments:0 -O2 restructureRules:on > css/main.min.css",
+    "watch:css": "watch 'npm run build:css' src/css/",
+    "prebuild:js": "npm run lint",
+    "build:js": "uglifyjs src/js/main.js --compress --mangle toplevel -o js/main.min.js --comment --screw-ie8 --source-map \"filename='js/main.min.js.map', root='/', url='main.min.js.map'\"",
+    "watch:js": "watch 'npm run build:js' src/js/",
+    "build:html": "html-minifier --remove-comments --collapse-whitespace --minify-css --minify-js < src/html/index.html > index.html",
+    "watch:html": "watch 'npm run build:html' src/html/",
+    "build": "npm run build:css && npm run build:js && npm run build:html",
+    "build:watch": "parallelshell 'npm run watch:js' 'npm run watch:css' 'npm run watch:html'"
+  },
+  "author": "BreadMaker",
+  "license": "GPL-3.0",
+  "private": true,
+  "devDependencies": {
+    "jshint": "latest",
+    "clean-css-cli": "latest",
+    "uglify-js": "latest",
+    "html-minifier": "latest",
+    "watch": "latest",
+    "parallelshell": "latest"
+  }
+}
