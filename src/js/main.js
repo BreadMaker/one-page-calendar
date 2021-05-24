@@ -1,4 +1,4 @@
-var $, moment;
+var $, moment, bootstrap;
 
 function sortWeekDays(arr, firstDay) {
   var result = {};
@@ -14,7 +14,46 @@ function sortWeekDays(arr, firstDay) {
 }
 
 $(document).ready(function() {
-  moment.locale(window.navigator.userLanguage || window.navigator.language);
+  // Dark Mode
+  if (localStorage.getItem("dark-mode") !== null && localStorage.getItem("dark-mode") == "false") {
+    document.querySelector("#toggle-darkmode-button .bi-sun-fill").classList.remove("d-none");
+    document.querySelector("#toggle-darkmode-button .bi-moon-fill").classList.add("d-none");
+    document.querySelectorAll("[data-dark-mode]").forEach(element => {
+      let modes = JSON.parse(element.dataset.darkMode);
+      modes[1].split(" ").forEach(cls => {
+        element.classList.add(cls);
+      });
+      modes[0].split(" ").forEach(cls => {
+        element.classList.remove(cls);
+      });
+    });
+  }
+  document.getElementById("toggle-darkmode-button").addEventListener("click", () => {
+    let darkMode = localStorage.getItem("dark-mode") === null ? true : Boolean(localStorage.getItem("dark-mode") == "true");
+    localStorage.setItem("dark-mode", !darkMode);
+    document.querySelectorAll("#toggle-darkmode-button i").forEach(element => {
+      element.classList.toggle("d-none");
+    });
+    document.querySelectorAll("[data-dark-mode]").forEach(element => {
+      let modes = JSON.parse(element.dataset.darkMode);
+      modes[+darkMode].split(" ").forEach(cls => {
+        element.classList.add(cls);
+      });
+      modes[+!darkMode].split(" ").forEach(cls => {
+        element.classList.remove(cls);
+      });
+    });
+  });
+  // Print functionality
+  var printModal = new bootstrap.Modal(document.getElementById("print-modal"));
+  document.getElementById("launch-print-modal-button").addEventListener("click", () => {
+    printModal.show();
+  });
+  document.getElementById("print-calendar-button").addEventListener("click", () => {
+    window.print();
+  });
+  // Main functionality
+  moment.locale(window.navigator.language);
   var weekDaysNames = sortWeekDays(moment.weekdaysShort(true), moment.localeData()
     .firstDayOfWeek());
   var monthsNames = moment.monthsShort();
@@ -40,7 +79,7 @@ $(document).ready(function() {
     });
     $(".months>.month:nth-child(" + (tempMoment.isoWeekday() + 1) +
       "):empty:first").data("month", i).text(monthsNames[i]).append(
-      " <span class='ui small top right attached label'>" +
+      " <span class='badge bg-secondary position-absolute'>" +
       tempMoment.daysInMonth() + "</span>");
     var columnSelector = ".days>.day:nth-child(" + (tempMoment.isoWeekday() +
       5) + ")";
@@ -52,20 +91,28 @@ $(document).ready(function() {
     }
   }
   $("#date").text(now.format("LL"));
+  $("#year, #copyleft-year").text(year);
   $(".day").each(function() {
     $(this).text(weekDaysNames[$(this).data("day")]).toggleClass(
-      "last", $(this).data("day") === 6);
+      "table-danger", $(this).data("day") === 6);
   });
   $(".month").filter(function() {
     return $(this).data("month") === now.toObject().months;
-  }).addClass("selected");
+  }).addClass("table-active");
   var dateCell = $(".date").filter(function() {
     return $(this).text() == now.toObject().date;
   });
-  dateCell.addClass("selected").parent().find(".day").each(
+  dateCell.addClass("table-active").parent().find(".day").each(
     function() {
       if ($(this).data("months").includes(now.toObject().months)) {
-        $(this).addClass("selected");
+        $(this).addClass("table-active");
       }
     });
+  // Tooltips
+  [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]")).map(element => {
+    new bootstrap.Tooltip(element, {
+      customClass: "d-print-none",
+      trigger: "hover"
+    });
+  });
 });
