@@ -1,6 +1,6 @@
 {
   "name": "one-page-calendar",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "One Page Calendar, based on an idea I found on the Internet",
   "main": "index.html",
   "repository": {

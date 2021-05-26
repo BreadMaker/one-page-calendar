@@ -50,8 +50,8 @@ body.bg-dark img {
     color: #000;
   }
 
-  .table-active {
-    box-shadow: none !important;
+  #one-page-calendar-container {
+    min-width: 100%;
   }
 
   #one-page-calendar.border-light .table-active:not(.table-danger) {
@@ -61,6 +61,10 @@ body.bg-dark img {
   #one-page-calendar.border-light .table-danger {
     border-color: #000;
     color: #000 !important;
+  }
+
+  .table-active {
+    box-shadow: none !important;
   }
 
   .badge.bg-secondary {
