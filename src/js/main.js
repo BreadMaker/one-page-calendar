@@ -1,7 +1,7 @@
-var $, moment, bootstrap;
+/*global $, moment, bootstrap*/
 
 function sortWeekDays(arr, firstDay) {
-  var result = {};
+  let result = {};
   if (firstDay === 0) {
     result = arr.splice(1);
     return result.concat(arr);
@@ -10,6 +10,28 @@ function sortWeekDays(arr, firstDay) {
     return result.concat(arr);
   } else {
     return arr;
+  }
+}
+
+let verticalPhoneModal;
+
+function checkTightSpot() {
+  if (window.innerWidth < 468) {
+    if (localStorage.getItem("dont-bother-vertical") == null || localStorage.getItem("dont-bother-vertical") == "false") {
+      verticalPhoneModal.show();
+    }
+  } else if (window.innerWidth < 564) {
+    document.getElementById("one-page-calendar").classList.add("table-sm");
+  } else {
+    let hideModalHandler = function() {
+      verticalPhoneModal.hide();
+    };
+    document.getElementById("vertical-mobile-modal").addEventListener("hidden.bs.modal", hideModalHandler, {
+      once: true
+    });
+    document.getElementById("one-page-calendar").classList.remove("table-sm");
+    hideModalHandler();
+    document.getElementById("vertical-mobile-modal").removeEventListener("hidden.bs.modal", hideModalHandler);
   }
 }
 
@@ -45,25 +67,40 @@ $(document).ready(function() {
     });
   });
   // Print functionality
-  var printModal = new bootstrap.Modal(document.getElementById("print-modal"));
+  let printModal = new bootstrap.Modal(document.getElementById("print-modal"));
   document.getElementById("launch-print-modal-button").addEventListener("click", () => {
     printModal.show();
   });
   document.getElementById("print-calendar-button").addEventListener("click", () => {
-    window.print();
+    document.getElementById("print-modal").addEventListener("hidden.bs.modal", () => {
+      window.print();
+    }, {
+      once: true
+    });
+  });
+  let cantPrintModal = new bootstrap.Modal(document.getElementById("cant-print-modal"));
+  document.getElementById("launch-cant-print-modal-button").addEventListener("click", () => {
+    cantPrintModal.show();
+  });
+  // Vertical phone mode warning
+  document.getElementById("dont-bother-checkbox").checked = false;
+  verticalPhoneModal = new bootstrap.Modal(document.getElementById("vertical-mobile-modal"));
+  checkTightSpot();
+  window.addEventListener("resize", checkTightSpot);
+  document.getElementById("dont-bother-checkbox").addEventListener("change", (event) => {
+    localStorage.setItem("dont-bother-vertical", event.target.checked);
   });
   // Main functionality
   moment.locale(window.navigator.language);
-  var weekDaysNames = sortWeekDays(moment.weekdaysShort(true), moment.localeData()
-    .firstDayOfWeek());
-  var monthsNames = moment.monthsShort();
-  var now = moment();
-  var year = now.year();
-  var tempMoment = moment(now);
-  var count = 0;
+  let weekDaysNames = sortWeekDays(moment.weekdaysShort(true), moment.localeData()
+      .firstDayOfWeek()),
+    monthsNames = moment.monthsShort(),
+    now = moment(),
+    year = now.year(),
+    tempMoment = moment(now),
+    count = 0;
   $(".days").each(function() {
-    var that = $(this);
-    that.children(".day").each(function() {
+    $(this).children(".day").each(function() {
       $(this).data("day", count);
       count++;
       if (count > 6)
@@ -81,9 +118,9 @@ $(document).ready(function() {
       "):empty:first").data("month", i).text(monthsNames[i]).append(
       " <span class='badge bg-secondary position-absolute'>" +
       tempMoment.daysInMonth() + "</span>");
-    var columnSelector = ".days>.day:nth-child(" + (tempMoment.isoWeekday() +
-      5) + ")";
-    var columnData = $(columnSelector).data("months");
+    let columnSelector = ".days>.day:nth-child(" + (tempMoment.isoWeekday() +
+        5) + ")",
+      columnData = $(columnSelector).data("months");
     if (columnData === undefined) {
       $(columnSelector).data("months", [i]);
     } else {
@@ -99,7 +136,7 @@ $(document).ready(function() {
   $(".month").filter(function() {
     return $(this).data("month") === now.toObject().months;
   }).addClass("table-active");
-  var dateCell = $(".date").filter(function() {
+  let dateCell = $(".date").filter(function() {
     return $(this).text() == now.toObject().date;
   });
   dateCell.addClass("table-active").parent().find(".day").each(

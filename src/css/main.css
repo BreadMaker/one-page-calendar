@@ -47,20 +47,26 @@ body.bg-dark img {
 @media print {
   table, tr, td {
     border: solid 1px #000;
-    color: #fff;
+    color: #000;
   }
 
   .table-active {
     box-shadow: none !important;
   }
 
+  #one-page-calendar.border-light .table-active:not(.table-danger) {
+    color: #000 !important;
+  }
+
   #one-page-calendar.border-light .table-danger {
     border-color: #000;
+    color: #000 !important;
   }
 
   .badge.bg-secondary {
     border-left: solid 1px #000;
     border-bottom: solid 1px #000;
+    color: #000;
   }
 
   #copyleft {
