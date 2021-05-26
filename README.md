@@ -6,12 +6,11 @@ and show correct locale dates and names.
 
 ## How to use
 
-You can't, for now. At least, they way it is right now.
-[I'm working on it](https://github.com/BreadMaker/one-page-calendar/issues/1).
+You can watch it work live at https://breadmaker.github.io/one-page-calendar/
 
 ## How to help
 
 This may have bugs, if you find one, like
-[this one](https://github.com/BreadMaker/one-page-calendar/issues/2), please
+[this one](https://github.com/BreadMaker/one-page-calendar/issues/4), please
 [report it](https://github.com/BreadMaker/one-page-calendar/issues/new). I'm
 open to receive ideas, also.
