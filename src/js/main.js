@@ -13,6 +13,67 @@ function sortWeekDays(arr, firstDay) {
   }
 }
 
+function populateCalendar() {
+  let weekDaysNames = sortWeekDays(moment.weekdaysShort(true), moment.localeData()
+      .firstDayOfWeek()),
+    monthsNames = moment.monthsShort(),
+    now = moment(),
+    eod = moment().endOf("day"),
+    year = now.year(),
+    tempMoment = moment(now),
+    count = 0;
+  document.querySelectorAll(".days").forEach(element => {
+    element.querySelectorAll(".day").forEach(dayElement => {
+      dayElement.dataset.day = count;
+      count++;
+      if (count > 6) {
+        count = 0;
+      }
+    });
+    count++;
+  });
+  $(".months>.month").empty();
+  for (var i = 0; i < 12; i++) {
+    tempMoment.set({
+      "year": year,
+      "date": 1,
+      "month": i
+    });
+    $(".months>.month:nth-child(" + (tempMoment.isoWeekday() + 1) +
+      "):empty:first").data("month", i).text(monthsNames[i]).append(
+      " <span class='badge bg-secondary position-absolute'>" +
+      tempMoment.daysInMonth() + "</span>");
+    let columnSelector = ".days>.day:nth-child(" + (tempMoment.isoWeekday() +
+        5) + ")",
+      columnData = $(columnSelector).data("months");
+    if (columnData === undefined) {
+      $(columnSelector).data("months", [i]);
+    } else {
+      $(columnSelector).data("months", columnData.concat([i]));
+    }
+  }
+  document.getElementById("date").textContent = now.format("LL");
+  document.getElementById("year").textContent = year;
+  document.getElementById("copyleft-year").textContent = year;
+  document.querySelectorAll(".day").forEach(element => {
+    element.textContent = weekDaysNames[element.dataset.day];
+    element.classList.toggle("table-danger", element.dataset.day == 6);
+  });
+  $(".month").filter(function() {
+    return $(this).data("month") === now.toObject().months;
+  }).addClass("table-active");
+  let dateCell = $(".date").filter(function() {
+    return $(this).text() == now.toObject().date;
+  });
+  dateCell.addClass("table-active").parent().find(".day").each(
+    function() {
+      if ($(this).data("months").includes(now.toObject().months)) {
+        $(this).addClass("table-active");
+      }
+    });
+  setTimeout(populateCalendar, eod.diff(now) + 100);
+}
+
 let verticalPhoneModal;
 
 function checkTightSpot() {
@@ -92,59 +153,7 @@ $(document).ready(function() {
   });
   // Main functionality
   moment.locale(window.navigator.language);
-  let weekDaysNames = sortWeekDays(moment.weekdaysShort(true), moment.localeData()
-      .firstDayOfWeek()),
-    monthsNames = moment.monthsShort(),
-    now = moment(),
-    year = now.year(),
-    tempMoment = moment(now),
-    count = 0;
-  $(".days").each(function() {
-    $(this).children(".day").each(function() {
-      $(this).data("day", count);
-      count++;
-      if (count > 6)
-        count = 0;
-    });
-    count++;
-  });
-  for (var i = 0; i < 12; i++) {
-    tempMoment.set({
-      "year": year,
-      "date": 1,
-      "month": i
-    });
-    $(".months>.month:nth-child(" + (tempMoment.isoWeekday() + 1) +
-      "):empty:first").data("month", i).text(monthsNames[i]).append(
-      " <span class='badge bg-secondary position-absolute'>" +
-      tempMoment.daysInMonth() + "</span>");
-    let columnSelector = ".days>.day:nth-child(" + (tempMoment.isoWeekday() +
-        5) + ")",
-      columnData = $(columnSelector).data("months");
-    if (columnData === undefined) {
-      $(columnSelector).data("months", [i]);
-    } else {
-      $(columnSelector).data("months", columnData.concat([i]));
-    }
-  }
-  $("#date").text(now.format("LL"));
-  $("#year, #copyleft-year").text(year);
-  $(".day").each(function() {
-    $(this).text(weekDaysNames[$(this).data("day")]).toggleClass(
-      "table-danger", $(this).data("day") === 6);
-  });
-  $(".month").filter(function() {
-    return $(this).data("month") === now.toObject().months;
-  }).addClass("table-active");
-  let dateCell = $(".date").filter(function() {
-    return $(this).text() == now.toObject().date;
-  });
-  dateCell.addClass("table-active").parent().find(".day").each(
-    function() {
-      if ($(this).data("months").includes(now.toObject().months)) {
-        $(this).addClass("table-active");
-      }
-    });
+  populateCalendar();
   // Tooltips
   [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]")).map(element => {
     new bootstrap.Tooltip(element, {
