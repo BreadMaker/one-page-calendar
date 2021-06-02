@@ -13,6 +13,19 @@ Mode, and even print a copy of the calendar of the current year.
 Unfortunately, due to a [bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1247609),
 you will not be able to print from Firefox for Android.
 
+## How to share
+
+The codebase is shared under a GPLv3 license, meaning you can make your own
+version and/or improve over what I have done here. Please refer to the
+[LICENSE file](https://github.com/BreadMaker/one-page-calendar/blob/master/LICENSE)
+for more details.
+
+The resulting calendar is shared under a Creative Commons Attribution-ShareAlike
+4.0 International license. You can share and adapt this work, as long you give
+proper credit and share your work under the same terms. Check the
+[human-readable summary](https://creativecommons.org/licenses/by-sa/4.0/) for
+more details.
+
 ## How to help
 
 This may have bugs, if you find one, like
