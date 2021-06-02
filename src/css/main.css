@@ -44,6 +44,16 @@ body.bg-dark img {
   border-radius: 0 0 0 .5em;
 }
 
+@media (max-width: 565px) {
+  .months>.month {
+    text-align: left;
+  }
+
+  .badge {
+    padding: .125em .25em;
+  }
+}
+
 @media print {
   table, tr, td {
     border: solid 1px #000;
