@@ -25,7 +25,7 @@
 }
 
 #copyleft>div {
-  font-size: .85em;
+  font-size: .75em;
 }
 
 #copyleft span {
@@ -76,7 +76,6 @@ body.bg-dark img {
   #copyleft {
     display: table-caption;
     color: #000;
-    opacity: .75;
   }
 
   body.bg-dark img {
