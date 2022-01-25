@@ -1,4 +1,4 @@
-/*global $, moment, bootstrap*/
+/*global moment, bootstrap*/
 
 function ready(fn) {
   if (document.readyState != "loading") {
@@ -52,18 +52,23 @@ function populateCalendar() {
       "date": 1,
       "month": i
     });
-    $(".months>.month:nth-child(" + (tempMoment.isoWeekday() + 1) +
-      "):empty:first").data("month", i).text(monthsNames[i]).append(
-      " <span class='badge bg-secondary position-absolute'>" +
-      tempMoment.daysInMonth() + "</span>");
-    let columnSelector = ".days>.day:nth-child(" + (tempMoment.isoWeekday() +
-        5) + ")",
-      columnData = $(columnSelector).data("months");
-    if (columnData === undefined) {
-      $(columnSelector).data("months", [i]);
-    } else {
-      $(columnSelector).data("months", columnData.concat([i]));
-    }
+    let month = document.querySelector(".months > .month:nth-child(" +
+      (tempMoment.isoWeekday() + 1) + "):empty");
+    month.dataset.month = i;
+    month.textContent = monthsNames[i];
+    let monthContent = document.createElement("span");
+    monthContent.classList.add("badge", "bg-secondary", "position-absolute");
+    monthContent.appendChild(document.createTextNode(tempMoment.daysInMonth()));
+    month.appendChild(monthContent);
+    document.querySelectorAll(".days > .day:nth-child(" +
+      (tempMoment.isoWeekday() + 5) + ")").forEach(element => {
+      let dayData = element.dataset;
+      if (dayData.months === undefined) {
+        dayData.months = JSON.stringify([i]);
+      } else {
+        dayData.months = JSON.stringify(JSON.parse(dayData.months).concat([i]));
+      }
+    });
   }
   document.getElementById("date").textContent = now.format("LL");
   document.getElementById("year").textContent = year;
@@ -73,14 +78,14 @@ function populateCalendar() {
     element.classList.toggle("table-danger", element.dataset.day == 6);
   });
   document.querySelectorAll(".month").forEach(element => {
-    if ($(element).data("month") === now.toObject().months)
+    if (element.dataset.month == now.toObject().months)
       element.classList.add("table-active");
   });
   let dateCell = document.evaluate("//td[text()='" + now.toObject().date + "']",
     document, null, XPathResult.ANY_TYPE, null).iterateNext();
   dateCell.classList.add("table-active");
   dateCell.parentNode.querySelectorAll(".day").forEach(element => {
-    if ($(element).data("months").includes(now.toObject().months))
+    if (element.dataset.months !== undefined && JSON.parse(element.dataset.months).includes(now.toObject().months))
       element.classList.add("table-active");
   });
   setTimeout(populateCalendar, eod.diff(now) + 100);
