@@ -1,4 +1,12 @@
-/*global $, moment, bootstrap*/
+/*global moment, bootstrap*/
+
+function ready(fn) {
+  if (document.readyState != "loading") {
+    fn();
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+}
 
 function sortWeekDays(arr, firstDay) {
   let result = {};
@@ -32,25 +40,35 @@ function populateCalendar() {
     });
     count++;
   });
-  $(".months>.month").empty();
+  let monthsElements = document.querySelectorAll(".months>.month");
+  monthsElements.forEach(element => {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  });
   for (var i = 0; i < 12; i++) {
     tempMoment.set({
       "year": year,
       "date": 1,
       "month": i
     });
-    $(".months>.month:nth-child(" + (tempMoment.isoWeekday() + 1) +
-      "):empty:first").data("month", i).text(monthsNames[i]).append(
-      " <span class='badge bg-secondary position-absolute'>" +
-      tempMoment.daysInMonth() + "</span>");
-    let columnSelector = ".days>.day:nth-child(" + (tempMoment.isoWeekday() +
-        5) + ")",
-      columnData = $(columnSelector).data("months");
-    if (columnData === undefined) {
-      $(columnSelector).data("months", [i]);
-    } else {
-      $(columnSelector).data("months", columnData.concat([i]));
-    }
+    let month = document.querySelector(".months > .month:nth-child(" +
+      (tempMoment.isoWeekday() + 1) + "):empty");
+    month.dataset.month = i;
+    month.textContent = monthsNames[i];
+    let monthContent = document.createElement("span");
+    monthContent.classList.add("badge", "bg-secondary", "position-absolute");
+    monthContent.appendChild(document.createTextNode(tempMoment.daysInMonth()));
+    month.appendChild(monthContent);
+    document.querySelectorAll(".days > .day:nth-child(" +
+      (tempMoment.isoWeekday() + 5) + ")").forEach(element => {
+      let dayData = element.dataset;
+      if (dayData.months === undefined) {
+        dayData.months = JSON.stringify([i]);
+      } else {
+        dayData.months = JSON.stringify(JSON.parse(dayData.months).concat([i]));
+      }
+    });
   }
   document.getElementById("date").textContent = now.format("LL");
   document.getElementById("year").textContent = year;
@@ -59,18 +77,17 @@ function populateCalendar() {
     element.textContent = weekDaysNames[element.dataset.day];
     element.classList.toggle("table-danger", element.dataset.day == 6);
   });
-  $(".month").filter(function() {
-    return $(this).data("month") === now.toObject().months;
-  }).addClass("table-active");
-  let dateCell = $(".date").filter(function() {
-    return $(this).text() == now.toObject().date;
+  document.querySelectorAll(".month").forEach(element => {
+    if (element.dataset.month == now.toObject().months)
+      element.classList.add("table-active");
   });
-  dateCell.addClass("table-active").parent().find(".day").each(
-    function() {
-      if ($(this).data("months").includes(now.toObject().months)) {
-        $(this).addClass("table-active");
-      }
-    });
+  let dateCell = document.evaluate("//td[text()='" + now.toObject().date + "']",
+    document, null, XPathResult.ANY_TYPE, null).iterateNext();
+  dateCell.classList.add("table-active");
+  dateCell.parentNode.querySelectorAll(".day").forEach(element => {
+    if (element.dataset.months !== undefined && JSON.parse(element.dataset.months).includes(now.toObject().months))
+      element.classList.add("table-active");
+  });
   setTimeout(populateCalendar, eod.diff(now) + 100);
 }
 
@@ -96,7 +113,7 @@ function checkTightSpot() {
   }
 }
 
-$(document).ready(function() {
+ready(() => {
   // Dark Mode
   if (localStorage.getItem("dark-mode") !== null && localStorage.getItem("dark-mode") == "false") {
     document.querySelector("#toggle-darkmode-button .bi-sun-fill").classList.remove("d-none");

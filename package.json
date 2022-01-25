@@ -1,6 +1,6 @@
 {
   "name": "one-page-calendar",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "One Page Calendar, based on an idea I found on the Internet",
   "main": "index.html",
   "repository": {
@@ -22,11 +22,11 @@
   "author": "BreadMaker",
   "license": "GPL-3.0",
   "devDependencies": {
-    "clean-css-cli": "^5.3.0",
-    "eslint": "^7.26.0",
+    "clean-css-cli": "^5.5.0",
+    "eslint": "^7.32.0",
     "html-minifier": "^4.0.0",
     "npm-run-all": "^4.1.5",
-    "terser": "^5.7.0",
+    "terser": "^5.10.0",
     "watch": "^0.13.0"
   }
 }
