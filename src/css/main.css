@@ -86,6 +86,7 @@ body.bg-dark img {
   #copyleft {
     display: table-caption;
     color: #000;
+    border-top: none;
   }
 
   body.bg-dark img {
