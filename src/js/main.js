@@ -1,5 +1,6 @@
 /*global moment, bootstrap*/
 
+// Custom $(document).ready() function
 function ready(fn) {
   if (document.readyState != "loading") {
     fn();
@@ -88,6 +89,7 @@ function populateCalendar() {
     if (element.dataset.months !== undefined && JSON.parse(element.dataset.months).includes(now.toObject().months))
       element.classList.add("table-active");
   });
+  // Setting a timeout to autoupdate calendar 100ms past midnight
   setTimeout(populateCalendar, eod.diff(now) + 100);
 }
 
