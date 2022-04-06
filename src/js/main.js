@@ -9,6 +9,7 @@ function ready(fn) {
   }
 }
 
+// Takes the list of days and reoders it depending of the locale's first day
 function sortWeekDays(arr, firstDay) {
   let result = {};
   if (firstDay === 0) {
@@ -22,6 +23,7 @@ function sortWeekDays(arr, firstDay) {
   }
 }
 
+// Populates the calendar with the proper days/months order
 function populateCalendar() {
   let weekDaysNames = sortWeekDays(moment.weekdaysShort(true), moment.localeData()
       .firstDayOfWeek()),
@@ -95,6 +97,7 @@ function populateCalendar() {
 
 let verticalPhoneModal;
 
+// Displays a modal suggesting the use of vertical mode on mobile devices
 function checkTightSpot() {
   if (window.innerWidth < 468) {
     if (localStorage.getItem("dont-bother-vertical") == null || localStorage.getItem("dont-bother-vertical") == "false") {
