@@ -25,8 +25,7 @@ function sortWeekDays(arr, firstDay) {
 
 // Populates the calendar with the proper days/months order
 function populateCalendar() {
-  let weekDaysNames = sortWeekDays(moment.weekdaysShort(true), moment.localeData()
-      .firstDayOfWeek()),
+  let weekDaysNames = sortWeekDays(moment.weekdaysShort(true), moment.localeData().firstDayOfWeek()),
     monthsNames = moment.monthsShort(),
     now = moment(),
     eod = moment().endOf("day"),
@@ -63,8 +62,7 @@ function populateCalendar() {
     monthContent.classList.add("badge", "bg-secondary", "position-absolute");
     monthContent.appendChild(document.createTextNode(tempMoment.daysInMonth()));
     month.appendChild(monthContent);
-    document.querySelectorAll(".days > .day:nth-child(" +
-      (tempMoment.isoWeekday() + 5) + ")").forEach(element => {
+    document.querySelectorAll(".days > .day:nth-child(" + (tempMoment.isoWeekday() + 5) + ")").forEach(element => {
       let dayData = element.dataset;
       if (dayData.months === undefined) {
         dayData.months = JSON.stringify([i]);
@@ -106,7 +104,7 @@ function checkTightSpot() {
   } else if (window.innerWidth < 564) {
     document.getElementById("one-page-calendar").classList.add("table-sm");
   } else {
-    let hideModalHandler = function() {
+    let hideModalHandler = () => {
       verticalPhoneModal.hide();
     };
     document.getElementById("vertical-mobile-modal").addEventListener("hidden.bs.modal", hideModalHandler, {
