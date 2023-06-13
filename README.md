@@ -10,9 +10,6 @@ You can watch it work live at https://breadmaker.github.io/one-page-calendar/
 There, you will be able to see the calendar with the current day, toggle Dark
 Mode, and even print a copy of the calendar of the current year.
 
-Unfortunately, due to a [bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1247609),
-you will not be able to print from Firefox for Android.
-
 ## How to share
 
 The codebase is shared under a GPLv3 license, meaning you can make your own
