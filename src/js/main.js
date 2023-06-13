@@ -159,10 +159,6 @@ ready(() => {
       once: true
     });
   });
-  let cantPrintModal = new bootstrap.Modal(document.getElementById("cant-print-modal"));
-  document.getElementById("launch-cant-print-modal-button").addEventListener("click", () => {
-    cantPrintModal.show();
-  });
   // Vertical phone mode warning
   document.getElementById("dont-bother-checkbox").checked = false;
   verticalPhoneModal = new bootstrap.Modal(document.getElementById("vertical-mobile-modal"));

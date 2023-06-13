@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>One Page Calendar</title>
   <link rel="icon" type="image/png" href="img/favicon.png">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
-    integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css"
-    integrity="sha384-xeJqLiuOvjUBq3iGOjvSQSIlwrpqjSHXpduPd6rQpuiM3f5/ijby8pCsnbu5S81n" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    integrity="sha384-Ay26V7L8bsJTsX9Sxclnvsn+hkdiwRnrjZJXqKmkIDobPgIIWBOVguEcQQLDuhfN" crossorigin="anonymous">
   <link rel="stylesheet" href="css/main.min.css">
 </head>
 
@@ -233,33 +233,6 @@
       </div>
     </div>
   </div>
-  <div id="cant-print-modal" class="modal fade d-print-none" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-light" data-dark-mode='["bg-dark text-light", "bg-light text-dark"]'>
-        <div class="modal-header bg-danger">
-          <h5 class="modal-title text-light">
-            <i class="bi bi-x-octagon"></i> I'm afraid you can't do that...
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-            style="filter:invert(1);"></button>
-        </div>
-        <div class="modal-body">
-          <p>
-            I'm sorry to inform you that due to <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1247609">a
-              bug</a>, you cannot print from Firefox for Android at the moment.
-          </p>
-          <p class="m-0">
-            For now, you will have to use another browser.
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-            <i class="bi bi-emoji-frown"></i> Ok...
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
   <div id="vertical-mobile-modal" class="modal fade d-print-none" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content bg-dark text-light" data-dark-mode='["bg-dark text-light", "bg-light text-dark"]'>
@@ -289,22 +262,12 @@
       </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>
   <script src="https://unpkg.com/moment@2.29.1/min/moment-with-locales.min.js"
     integrity="sha384-IFyOtsSJQkqd1kMlhelCNzXIOub/YQewnLE43aaVvkbMDQMBbg7WApLMjn9yuW9M"
     crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js"
-    integrity="sha384-DIRkweSZHEcDL10WymKHe/2P2+TsECVkQhOsKSgwcbGmSaR/yL///daa0leHk7RM"
-    crossorigin="anonymous"></script>
-  <script type="text/javascript">
-    //Platform.js init
-    if (platform.name == "Firefox Mobile" && platform.os.family == "Android") {
-      document.getElementById("launch-print-modal-button-container").classList.add("d-none");
-      document.getElementById("launch-cant-print-modal-button-container").classList.remove("d-none");
-    }
-  </script>
   <script src="js/main.min.js"></script>
 </body>
 
