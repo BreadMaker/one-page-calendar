@@ -32,7 +32,7 @@
   line-height: 1em;
 }
 
-body.bg-dark img {
+html[data-bs-theme="dark"] #bottom-credits img {
   filter: invert(1);
 }
 
@@ -55,7 +55,10 @@ body.bg-dark img {
 }
 
 @media print {
-  table, tr, td {
+
+  table,
+  tr,
+  td {
     border: solid 1px #000;
     color: #000;
   }
@@ -89,7 +92,4 @@ body.bg-dark img {
     border-top: none;
   }
 
-  body.bg-dark img {
-    filter: none;
-  }
 }
