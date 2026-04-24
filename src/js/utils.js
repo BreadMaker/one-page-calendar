@@ -9,7 +9,7 @@ dayjs.extend(localeDataPlugin);
 dayjs.extend(isoWeek);
 
 export function sortWeekDays(arr, firstDay) {
-  let result = {};
+  let result = [];
   if (firstDay === 0) {
     result = arr.splice(1);
     return result.concat(arr);
