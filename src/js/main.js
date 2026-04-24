@@ -1,6 +1,18 @@
-/*global moment, bootstrap*/
+import dayjs from 'dayjs';
+import localeDataPlugin from 'dayjs/plugin/localeData';
+import isoWeek from 'dayjs/plugin/isoWeek';
+import duration from 'dayjs/plugin/duration';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/zh-tw';
+import 'dayjs/locale/en';
+import { sortWeekDays, getMonthFirstDay, getDaysInMonth, isLeapYear } from './utils';
 
-// Custom $(document).ready() function
+dayjs.extend(localeDataPlugin);
+dayjs.extend(isoWeek);
+dayjs.extend(duration);
+dayjs.extend(advancedFormat);
+
 function ready(fn) {
   if (document.readyState != 'loading') {
     fn();
@@ -9,28 +21,14 @@ function ready(fn) {
   }
 }
 
-// Takes the list of days and reoders it depending of the locale's first day
-function sortWeekDays(arr, firstDay) {
-  let result = {};
-  if (firstDay === 0) {
-    result = arr.splice(1);
-    return result.concat(arr);
-  } else if (firstDay === 6) {
-    result = arr.splice(2);
-    return result.concat(arr);
-  } else {
-    return arr;
-  }
-}
-
-// Populates the calendar with the proper days/months order
 function populateCalendar() {
-  let weekDaysNames = sortWeekDays(moment.weekdaysShort(true), moment.localeData().firstDayOfWeek()),
-    monthsNames = moment.monthsShort(),
-    now = moment(),
-    eod = moment().endOf('day'),
+  const localeData = dayjs.localeData();
+  let weekDaysNames = sortWeekDays(localeData.weekdaysShort(), localeData.firstDayOfWeek()),
+    monthsNames = localeData.monthsShort(),
+    now = dayjs(),
+    eod = dayjs().endOf('day'),
     year = now.year(),
-    tempMoment = moment(now),
+    tempDayjs = dayjs(now),
     count = 0;
   document.querySelectorAll('.days').forEach(element => {
     element.querySelectorAll('.day').forEach(dayElement => {
@@ -49,20 +47,16 @@ function populateCalendar() {
     }
   });
   for (var i = 0; i < 12; i++) {
-    tempMoment.set({
-      'year': year,
-      'date': 1,
-      'month': i
-    });
+    tempDayjs = tempDayjs.set('year', year).set('date', 1).set('month', i);
     let month = document.querySelector('.months > .month:nth-child(' +
-      (tempMoment.isoWeekday() + 1) + '):empty');
+      (tempDayjs.isoWeekday() + 1) + '):empty');
     month.dataset.month = i;
     month.textContent = monthsNames[i];
     let monthContent = document.createElement('span');
     monthContent.classList.add('badge', 'bg-secondary', 'position-absolute');
-    monthContent.appendChild(document.createTextNode(tempMoment.daysInMonth()));
+    monthContent.appendChild(document.createTextNode(tempDayjs.daysInMonth()));
     month.appendChild(monthContent);
-    document.querySelectorAll('.days > .day:nth-child(' + (tempMoment.isoWeekday() + 5) + ')').forEach(element => {
+    document.querySelectorAll('.days > .day:nth-child(' + (tempDayjs.isoWeekday() + 5) + ')').forEach(element => {
       let dayData = element.dataset;
       if (dayData.months === undefined) {
         dayData.months = JSON.stringify([i]);
@@ -79,23 +73,21 @@ function populateCalendar() {
     element.classList.toggle('table-danger', element.dataset.day == 6);
   });
   document.querySelectorAll('.month').forEach(element => {
-    if (element.dataset.month == now.toObject().months)
+    if (element.dataset.month == now.month())
       element.classList.add('table-active');
   });
-  let dateCell = document.evaluate("//td[text()='" + now.toObject().date + "']",
+  let dateCell = document.evaluate("//td[text()='" + now.date() + "']",
     document, null, XPathResult.ANY_TYPE, null).iterateNext();
   dateCell.classList.add('table-active');
   dateCell.parentNode.querySelectorAll('.day').forEach(element => {
-    if (element.dataset.months !== undefined && JSON.parse(element.dataset.months).includes(now.toObject().months))
+    if (element.dataset.months !== undefined && JSON.parse(element.dataset.months).includes(now.month()))
       element.classList.add('table-active');
   });
-  // Setting a timeout to autoupdate calendar 100ms past midnight
   setTimeout(populateCalendar, eod.diff(now) + 100);
 }
 
 let verticalPhoneModal;
 
-// Displays a modal suggesting the use of vertical mode on mobile devices
 function checkTightSpot() {
   if (window.innerWidth < 468) {
     if (localStorage.getItem('dont-bother-vertical') == null || localStorage.getItem('dont-bother-vertical') == 'false') {
@@ -116,12 +108,9 @@ function checkTightSpot() {
   }
 }
 
-// Find all elements that have any class ending in "-light" or "-dark"
 function toggleLightDarkClasses() {
   document.body.querySelectorAll('[class*="-light"], [class*="-dark"]').forEach(el => {
-    // get the full className string
     let cls = el.className;
-    // regex to replace all "-light" suffixes with "-dark", and "-dark" with "-light"
     cls = cls.replace(/\b([^\s]+?)-(light|dark)\b/g, (match, base, suffix) => {
       return base + (suffix === 'light' ? '-dark' : '-light');
     });
@@ -129,10 +118,7 @@ function toggleLightDarkClasses() {
   });
 }
 
-
-
 ready(() => {
-  // Dark Mode
   if (localStorage.getItem('dark-mode') === null)
     localStorage.setItem('dark-mode', 'dark');
   else if (localStorage.getItem('dark-mode') === 'light') {
@@ -148,7 +134,6 @@ ready(() => {
       toggleLightDarkClasses();
     });
   });
-  // Print functionality
   let printModal = new bootstrap.Modal(document.getElementById('print-modal'));
   document.getElementById('launch-print-modal-button').addEventListener('click', () => {
     printModal.show();
@@ -160,7 +145,6 @@ ready(() => {
       once: true
     });
   });
-  // Vertical phone mode warning
   document.getElementById('dont-bother-checkbox').checked = false;
   verticalPhoneModal = new bootstrap.Modal(document.getElementById('vertical-mobile-modal'));
   checkTightSpot();
@@ -168,10 +152,11 @@ ready(() => {
   document.getElementById('dont-bother-checkbox').addEventListener('change', (event) => {
     localStorage.setItem('dont-bother-vertical', event.target.checked);
   });
-  // Main functionality
-  moment.locale(window.navigator.language);
+  const userLocale = window.navigator.language.toLowerCase();
+  if (['zh-cn', 'zh-tw', 'en'].includes(userLocale)) {
+    dayjs.locale(userLocale);
+  }
   populateCalendar();
-  // Tooltips
   [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(element => {
     new bootstrap.Tooltip(element, {
       customClass: 'd-print-none',

@@ -8,17 +8,11 @@
     "url": "git@gitlab.com:BreadMaker/one-page-calendar.git"
   },
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "eslint src/js/main.js --fix",
-    "build:css": "postcss src/css/main.css -o css/main.min.css",
-    "watch:css": "watch 'npm run build:css' src/css/",
-    "prebuild:js": "npm run lint",
-    "build:js": "esbuild src/js/main.js --bundle --minify --sourcemap --outfile=js/main.min.js",
-    "watch:js": "watch 'npm run build:js' src/js/",
-    "build:html": "html-minifier-next --remove-comments --collapse-whitespace --minify-css --minify-js < src/html/index.html > index.html",
-    "watch:html": "watch 'npm run build:html' src/html/",
-    "build": "npm run build:css && npm run build:js && npm run build:html",
-    "build:watch": "run-p watch:**",
-    "serve": "http-server"
+    "test": "vitest"
   },
   "author": "BreadMaker",
   "license": "GPL-3.0",
@@ -31,6 +25,9 @@
     "npm-run-all2": "^8.0.4",
     "postcss": "^8.5.8",
     "postcss-cli": "^11.0.1",
-    "watch": "^0.13.0"
+    "watch": "^0.13.0",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0",
+    "dayjs": "^1.11.13"
   }
 }
