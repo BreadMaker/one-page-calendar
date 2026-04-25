@@ -26,6 +26,11 @@
           <i class="bi bi-sun-fill"></i>
         </button>
       </div>
+      <div class="btn-group me-2">
+        <button id="toolbar-toggle" class="btn btn-outline-light rounded-circle" data-bs-toggle="tooltip" title="Toggle drawing toolbar">
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+      </div>
       <div id="launch-print-modal-button-container" class="btn-group me-2">
         <button id="launch-print-modal-button" class="btn btn-outline-light rounded-circle" data-bs-toggle="tooltip"
           title="Print the calendar">
@@ -45,7 +50,61 @@
         </a>
       </div>
     </div>
-    <div id="one-page-calendar-container" class="container-md table-responsive my-2 p-0">
+    <div id="drawing-toolbar" class="d-print-none">
+      <div id="toolbar-content" class="d-none">
+        <div class="btn-group me-2" role="group" aria-label="Drawing tools">
+          <button id="pen-tool" class="btn btn-outline-light active" data-bs-toggle="tooltip" title="Pen (3 sizes)">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button id="highlighter-tool" class="btn btn-outline-light" data-bs-toggle="tooltip" title="Highlighter">
+            <i class="bi bi-brush"></i>
+          </button>
+          <button id="eraser-tool" class="btn btn-outline-light" data-bs-toggle="tooltip" title="Eraser">
+            <i class="bi bi-eraser"></i>
+          </button>
+        </div>
+        <div class="btn-group me-2" role="group" aria-label="Pen sizes" id="pen-size-group">
+          <button class="btn btn-outline-light active" data-size="2" data-bs-toggle="tooltip" title="Small">
+            <span style="width: 4px; height: 4px; display: inline-block; background-color: currentColor; border-radius: 50%;"></span>
+          </button>
+          <button class="btn btn-outline-light" data-size="4" data-bs-toggle="tooltip" title="Medium">
+            <span style="width: 8px; height: 8px; display: inline-block; background-color: currentColor; border-radius: 50%;"></span>
+          </button>
+          <button class="btn btn-outline-light" data-size="8" data-bs-toggle="tooltip" title="Large">
+            <span style="width: 12px; height: 12px; display: inline-block; background-color: currentColor; border-radius: 50%;"></span>
+          </button>
+        </div>
+        <div class="btn-group me-2" role="group" aria-label="Colors">
+          <button id="color-black" class="btn btn-outline-light active" data-color="#000000" data-bs-toggle="tooltip" title="Black">
+            <span style="width: 16px; height: 16px; display: inline-block; background-color: #000; border: 1px solid #fff; border-radius: 2px;"></span>
+          </button>
+          <button id="color-red" class="btn btn-outline-light" data-color="#dc3545" data-bs-toggle="tooltip" title="Red">
+            <span style="width: 16px; height: 16px; display: inline-block; background-color: #dc3545; border: 1px solid #fff; border-radius: 2px;"></span>
+          </button>
+          <button id="color-blue" class="btn btn-outline-light" data-color="#0d6efd" data-bs-toggle="tooltip" title="Blue">
+            <span style="width: 16px; height: 16px; display: inline-block; background-color: #0d6efd; border: 1px solid #fff; border-radius: 2px;"></span>
+          </button>
+          <button id="color-green" class="btn btn-outline-light" data-color="#198754" data-bs-toggle="tooltip" title="Green">
+            <span style="width: 16px; height: 16px; display: inline-block; background-color: #198754; border: 1px solid #fff; border-radius: 2px;"></span>
+          </button>
+        </div>
+        <div class="btn-group me-2" role="group" aria-label="Undo/Redo">
+          <button id="undo-button" class="btn btn-outline-light" data-bs-toggle="tooltip" title="Undo">
+            <i class="bi bi-arrow-counterclockwise"></i>
+          </button>
+          <button id="redo-button" class="btn btn-outline-light" data-bs-toggle="tooltip" title="Redo">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Export">
+          <button id="export-png-button" class="btn btn-outline-light" data-bs-toggle="tooltip" title="Export as PNG">
+            <i class="bi bi-download"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="one-page-calendar-container" class="container-md table-responsive my-2 p-0 position-relative">
+      <canvas id="drawing-canvas" class="position-absolute top-0 left-0 w-100 h-100"></canvas>
       <table id="one-page-calendar" class="table table-bordered align-middle text-center border-light">
         <tbody>
           <tr class="months">
