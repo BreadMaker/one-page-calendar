@@ -94,6 +94,208 @@ function populateCalendar() {
 }
 
 let verticalPhoneModal;
+let activePopup = null;
+let activeDayElement = null;
+
+function clearAllHighlights() {
+  document.querySelectorAll('.hover-highlight').forEach(el => {
+    el.classList.remove('hover-highlight');
+  });
+}
+
+function clearAllBreatheAnimations() {
+  document.querySelectorAll('.breathe-animation').forEach(el => {
+    el.classList.remove('breathe-animation');
+  });
+}
+
+function closeDayPopup() {
+  if (activePopup) {
+    activePopup.classList.remove('show');
+    setTimeout(() => {
+      if (activePopup && activePopup.parentNode) {
+        activePopup.parentNode.removeChild(activePopup);
+      }
+      activePopup = null;
+    }, 300);
+  }
+  clearAllBreatheAnimations();
+  activeDayElement = null;
+}
+
+function getColumnIndex(cell) {
+  let index = 0;
+  let sibling = cell.previousElementSibling;
+  while (sibling) {
+    if (!sibling.classList.contains('d-none')) {
+      let colspan = parseInt(sibling.getAttribute('colspan')) || 1;
+      index += colspan;
+    }
+    sibling = sibling.previousElementSibling;
+  }
+  return index;
+}
+
+function getDayCellsByColumn(columnIndex) {
+  const cells = [];
+  document.querySelectorAll('.days > .day').forEach(day => {
+    if (getColumnIndex(day) === columnIndex) {
+      cells.push(day);
+    }
+  });
+  return cells;
+}
+
+function getMonthsByDayCells(dayCells) {
+  const months = new Set();
+  dayCells.forEach(cell => {
+    if (cell.dataset.months) {
+      JSON.parse(cell.dataset.months).forEach(m => months.add(m));
+    }
+  });
+  return Array.from(months);
+}
+
+function getDateCellsInRow(row) {
+  return Array.from(row.querySelectorAll('.date'));
+}
+
+function highlightCrosshair(dayElement) {
+  clearAllHighlights();
+  
+  const row = dayElement.closest('tr');
+  const columnIndex = getColumnIndex(dayElement);
+  
+  const dateCells = getDateCellsInRow(row);
+  dateCells.forEach(cell => {
+    cell.classList.add('hover-highlight');
+  });
+  
+  const dayCellsInColumn = getDayCellsByColumn(columnIndex);
+  const months = getMonthsByDayCells(dayCellsInColumn);
+  
+  document.querySelectorAll('.month').forEach(month => {
+    if (months.includes(parseInt(month.dataset.month))) {
+      month.classList.add('hover-highlight');
+    }
+  });
+}
+
+function createDayPopup(dayElement) {
+  const dayName = dayElement.textContent;
+  const row = dayElement.closest('tr');
+  const dateCells = getDateCellsInRow(row);
+  
+  let datesText = '';
+  if (dateCells.length > 0) {
+    const dates = dateCells.map(cell => cell.textContent).filter(d => d);
+    datesText = dates.join(', ');
+  }
+  
+  const columnIndex = getColumnIndex(dayElement);
+  const dayCellsInColumn = getDayCellsByColumn(columnIndex);
+  const months = getMonthsByDayCells(dayCellsInColumn);
+  
+  let monthsText = '';
+  if (months.length > 0) {
+    const monthsNames = moment.monthsShort();
+    monthsText = months.map(m => monthsNames[m]).join(', ');
+  }
+  
+  const popup = document.createElement('div');
+  popup.className = 'day-popup';
+  popup.innerHTML = `
+    <div class="day-popup-title">${dayName}</div>
+    <div class="day-popup-date">日期: ${datesText}</div>
+    <div class="day-popup-date">月份: ${monthsText}</div>
+  `;
+  
+  document.body.appendChild(popup);
+  
+  const rect = dayElement.getBoundingClientRect();
+  let left = rect.left + (rect.width / 2) - 90;
+  let top = rect.bottom + 10;
+  
+  const popupRect = popup.getBoundingClientRect();
+  if (left + popupRect.width > window.innerWidth) {
+    left = window.innerWidth - popupRect.width - 20;
+  }
+  if (left < 10) {
+    left = 10;
+  }
+  if (top + popupRect.height > window.innerHeight) {
+    top = rect.top - popupRect.height - 10;
+  }
+  
+  popup.style.left = left + 'px';
+  popup.style.top = top + 'px';
+  
+  setTimeout(() => {
+    popup.classList.add('show');
+  }, 10);
+  
+  return popup;
+}
+
+function triggerBreatheAnimation(dayElement) {
+  clearAllBreatheAnimations();
+  
+  const row = dayElement.closest('tr');
+  const columnIndex = getColumnIndex(dayElement);
+  
+  const dateCells = getDateCellsInRow(row);
+  dateCells.forEach(cell => {
+    cell.classList.add('breathe-animation');
+  });
+  
+  const dayCellsInColumn = getDayCellsByColumn(columnIndex);
+  const months = getMonthsByDayCells(dayCellsInColumn);
+  
+  document.querySelectorAll('.month').forEach(month => {
+    if (months.includes(parseInt(month.dataset.month))) {
+      month.classList.add('breathe-animation');
+    }
+  });
+  
+  dayElement.classList.add('breathe-animation');
+}
+
+function bindDayInteractions() {
+  document.querySelectorAll('.day').forEach(dayElement => {
+    dayElement.addEventListener('mouseenter', function() {
+      if (activeDayElement === this) return;
+      highlightCrosshair(this);
+    });
+    
+    dayElement.addEventListener('mouseleave', function() {
+      if (activeDayElement === this) return;
+      clearAllHighlights();
+    });
+    
+    dayElement.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      if (activeDayElement === this) {
+        closeDayPopup();
+        return;
+      }
+      
+      closeDayPopup();
+      clearAllHighlights();
+      
+      activeDayElement = this;
+      activePopup = createDayPopup(this);
+      triggerBreatheAnimation(this);
+    });
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (activePopup && !activePopup.contains(e.target)) {
+      closeDayPopup();
+      clearAllHighlights();
+    }
+  });
+}
 
 // Displays a modal suggesting the use of vertical mode on mobile devices
 function checkTightSpot() {
@@ -171,6 +373,7 @@ ready(() => {
   // Main functionality
   moment.locale(window.navigator.language);
   populateCalendar();
+  bindDayInteractions();
   // Tooltips
   [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(element => {
     new bootstrap.Tooltip(element, {

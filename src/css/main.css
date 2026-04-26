@@ -36,6 +36,85 @@ html[data-bs-theme="dark"] #bottom-credits img {
   filter: invert(1);
 }
 
+.day {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.day:hover {
+  background-color: rgba(var(--bs-info-rgb), 0.2) !important;
+}
+
+.hover-highlight {
+  background-color: rgba(var(--bs-info-rgb), 0.2) !important;
+}
+
+.day-popup {
+  position: fixed;
+  z-index: 1050;
+  background-color: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+  min-width: 180px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.day-popup.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.day-popup-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--bs-primary);
+}
+
+.day-popup-date {
+  font-size: 0.9rem;
+  color: var(--bs-secondary);
+}
+
+@keyframes breathe {
+  0%, 100% {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0.4);
+  }
+  50% {
+    background-color: rgba(var(--bs-primary-rgb), 0.3);
+    box-shadow: 0 0 0 8px rgba(var(--bs-primary-rgb), 0);
+  }
+}
+
+.breathe-animation {
+  animation: breathe 2s ease-in-out infinite !important;
+}
+
+.breathe-animation.date,
+.breathe-animation.month {
+  background-color: rgba(var(--bs-primary-rgb), 0.15) !important;
+}
+
+html[data-bs-theme="light"] .breathe-animation {
+  animation: breathe-light 2s ease-in-out infinite !important;
+}
+
+@keyframes breathe-light {
+  0%, 100% {
+    background-color: rgba(13, 110, 253, 0.1);
+    box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4);
+  }
+  50% {
+    background-color: rgba(13, 110, 253, 0.3);
+    box-shadow: 0 0 0 8px rgba(13, 110, 253, 0);
+  }
+}
+
 .badge {
   top: 0;
   right: 0;
