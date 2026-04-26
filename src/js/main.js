@@ -129,6 +129,190 @@ function toggleLightDarkClasses() {
   });
 }
 
+const CHECKIN_STORAGE_KEY = 'one-page-calendar-checkins';
+const currentYear = moment().year();
+
+function getCheckinStorage() {
+  const stored = localStorage.getItem(CHECKIN_STORAGE_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      return {};
+    }
+  }
+  return {};
+}
+
+function saveCheckinStorage(data) {
+  localStorage.setItem(CHECKIN_STORAGE_KEY, JSON.stringify(data));
+}
+
+function generateCellId(cell) {
+  const rowIndex = cell.parentElement.rowIndex;
+  const cellIndex = cell.cellIndex;
+  const classList = Array.from(cell.classList);
+  const isDay = classList.includes('day');
+  const isMonth = classList.includes('month');
+  const isDate = classList.includes('date');
+  
+  let type = 'unknown';
+  if (isDay) type = 'day';
+  if (isMonth) type = 'month';
+  if (isDate) type = 'date';
+  
+  return `${currentYear}-${type}-${rowIndex}-${cellIndex}`;
+}
+
+function isCellCheckin(cellId) {
+  const storage = getCheckinStorage();
+  return storage[cellId] === true;
+}
+
+function toggleCellCheckin(cell) {
+  const cellId = generateCellId(cell);
+  const storage = getCheckinStorage();
+  
+  if (storage[cellId]) {
+    delete storage[cellId];
+    cell.classList.remove('active-checkin');
+  } else {
+    storage[cellId] = true;
+    cell.classList.add('active-checkin');
+  }
+  
+  saveCheckinStorage(storage);
+  updateConnectionLines();
+}
+
+function getCellCenterPosition(cell) {
+  const rect = cell.getBoundingClientRect();
+  const container = document.getElementById('one-page-calendar-container');
+  const containerRect = container.getBoundingClientRect();
+  
+  return {
+    x: rect.left - containerRect.left + rect.width / 2,
+    y: rect.top - containerRect.top + rect.height / 2
+  };
+}
+
+function updateConnectionLines() {
+  const svg = document.getElementById('connection-lines');
+  if (!svg) return;
+  
+  while (svg.firstChild) {
+    svg.removeChild(svg.firstChild);
+  }
+  
+  const activeCells = document.querySelectorAll('.active-checkin');
+  if (activeCells.length < 2) return;
+  
+  const positions = [];
+  activeCells.forEach((cell, index) => {
+    const pos = getCellCenterPosition(cell);
+    pos.index = index;
+    positions.push(pos);
+  });
+  
+  const sortedPositions = positions.sort((a, b) => a.y - b.y || a.x - b.x);
+  
+  for (let i = 0; i < sortedPositions.length - 1; i++) {
+    const start = sortedPositions[i];
+    const end = sortedPositions[i + 1];
+    
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', start.x);
+    line.setAttribute('y1', start.y);
+    line.setAttribute('x2', end.x);
+    line.setAttribute('y2', end.y);
+    line.setAttribute('class', 'connection-line');
+    line.style.animationDelay = `${i * 0.3}s`;
+    svg.appendChild(line);
+  }
+  
+  sortedPositions.forEach((pos, index) => {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', pos.x);
+    circle.setAttribute('cy', pos.y);
+    circle.setAttribute('r', 5);
+    circle.setAttribute('class', 'connection-point');
+    circle.style.animationDelay = `${index * 0.2}s`;
+    svg.appendChild(circle);
+  });
+}
+
+function restoreCheckinState() {
+  const allCells = document.querySelectorAll('.day, .month, .date');
+  const storage = getCheckinStorage();
+  
+  allCells.forEach(cell => {
+    const cellId = generateCellId(cell);
+    if (storage[cellId]) {
+      cell.classList.add('active-checkin');
+    } else {
+      cell.classList.remove('active-checkin');
+    }
+  });
+  
+  updateConnectionLines();
+}
+
+function setupCheckinClickHandlers() {
+  const allCells = document.querySelectorAll('.day, .month, .date');
+  
+  allCells.forEach(cell => {
+    cell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleCellCheckin(cell);
+    });
+    
+    cell.style.cursor = 'pointer';
+  });
+}
+
+function takeScreenshot() {
+  const container = document.getElementById('one-page-calendar-container');
+  const svg = document.getElementById('connection-lines');
+  
+  const tempSvg = svg.cloneNode(true);
+  tempSvg.style.position = 'absolute';
+  tempSvg.style.top = '0';
+  tempSvg.style.left = '0';
+  tempSvg.style.width = '100%';
+  tempSvg.style.height = '100%';
+  tempSvg.style.pointerEvents = 'none';
+  tempSvg.style.zIndex = '100';
+  container.appendChild(tempSvg);
+  
+  const originalSvgDisplay = svg.style.display;
+  svg.style.display = 'none';
+  
+  html2canvas(container, {
+    backgroundColor: null,
+    scale: 2,
+    useCORS: true,
+    logging: false
+  }).then(canvas => {
+    const link = document.createElement('a');
+    const timestamp = moment().format('YYYY-MM-DD_HH-mm-ss');
+    link.download = `calendar-checkin-${timestamp}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    
+    if (tempSvg.parentNode) {
+      tempSvg.parentNode.removeChild(tempSvg);
+    }
+    svg.style.display = originalSvgDisplay;
+  }).catch(err => {
+    console.error('Screenshot failed:', err);
+    
+    if (tempSvg.parentNode) {
+      tempSvg.parentNode.removeChild(tempSvg);
+    }
+    svg.style.display = originalSvgDisplay;
+  });
+}
+
 
 
 ready(() => {
@@ -171,6 +355,22 @@ ready(() => {
   // Main functionality
   moment.locale(window.navigator.language);
   populateCalendar();
+  
+  // Checkin functionality
+  setupCheckinClickHandlers();
+  restoreCheckinState();
+  
+  // Update connection lines on window resize
+  window.addEventListener('resize', () => {
+    setTimeout(updateConnectionLines, 100);
+  });
+  
+  // Screenshot button
+  const screenshotButton = document.getElementById('screenshot-button');
+  if (screenshotButton) {
+    screenshotButton.addEventListener('click', takeScreenshot);
+  }
+  
   // Tooltips
   [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(element => {
     new bootstrap.Tooltip(element, {

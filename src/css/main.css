@@ -54,6 +54,131 @@ html[data-bs-theme="dark"] #bottom-credits img {
   }
 }
 
+.day, .month, .date {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.day::before,
+.month::before,
+.date::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: conic-gradient(from 0deg, #00ffff, #ff00ff, #ffff00, #00ff00, #00ffff);
+  z-index: -1;
+  opacity: 0;
+  animation: rotate-gradient 3s linear infinite;
+}
+
+.day.active-checkin,
+.month.active-checkin,
+.date.active-checkin {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+}
+
+.day.active-checkin::before,
+.month.active-checkin::before,
+.date.active-checkin::before {
+  opacity: 1;
+}
+
+@keyframes rotate-gradient {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.day.active-checkin::after,
+.month.active-checkin::after,
+.date.active-checkin::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  z-index: 0;
+}
+
+html[data-bs-theme="dark"] .day.active-checkin::after,
+html[data-bs-theme="dark"] .month.active-checkin::after,
+html[data-bs-theme="dark"] .date.active-checkin::after {
+  background: #212529;
+}
+
+html[data-bs-theme="light"] .day.active-checkin::after,
+html[data-bs-theme="light"] .month.active-checkin::after,
+html[data-bs-theme="light"] .date.active-checkin::after {
+  background: #fff;
+}
+
+.day.active-checkin,
+.month.active-checkin,
+.date.active-checkin {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, inset 0 0 5px rgba(0, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff, 0 0 60px #ffff00, inset 0 0 10px rgba(0, 255, 255, 0.2);
+  }
+}
+
+#connection-lines {
+  overflow: visible;
+}
+
+.connection-line {
+  fill: none;
+  stroke: rgba(0, 255, 255, 0.6);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 8px #00ffff) drop-shadow(0 0 15px #ff00ff);
+  opacity: 0.7;
+  animation: line-glow 2s ease-in-out infinite;
+}
+
+@keyframes line-glow {
+  0%, 100% {
+    opacity: 0.5;
+    filter: drop-shadow(0 0 8px #00ffff) drop-shadow(0 0 15px #ff00ff);
+  }
+  50% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 15px #00ffff) drop-shadow(0 0 25px #ff00ff) drop-shadow(0 0 35px #ffff00);
+  }
+}
+
+.connection-point {
+  fill: #00ffff;
+  stroke: #ff00ff;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 5px #00ffff);
+  animation: point-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes point-pulse {
+  0%, 100% {
+    r: 5;
+  }
+  50% {
+    r: 7;
+  }
+}
+
 @media print {
 
   table,
