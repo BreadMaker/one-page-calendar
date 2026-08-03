@@ -1,6 +1,6 @@
 {
   "name": "one-page-calendar",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "One Page Calendar, based on an idea I found on the Internet",
   "main": "index.html",
   "repository": {
@@ -32,6 +32,9 @@
     "postcss": "^8.5.25",
     "postcss-cli": "^11.0.1",
     "watch": "^0.13.0"
+  },
+  "overrides": {
+    "picomatch": "^4.0.4"
   },
   "allowScripts": {
     "esbuild@0.28.1": true
