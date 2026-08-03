@@ -82,7 +82,7 @@ function populateCalendar() {
     if (element.dataset.month == now.toObject().months)
       element.classList.add('table-active');
   });
-  let dateCell = document.evaluate("//td[text()='" + now.toObject().date + "']",
+  let dateCell = document.evaluate('//td[text()=\'' + now.toObject().date + '\']',
     document, null, XPathResult.ANY_TYPE, null).iterateNext();
   dateCell.classList.add('table-active');
   dateCell.parentNode.querySelectorAll('.day').forEach(element => {
